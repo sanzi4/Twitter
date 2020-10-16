@@ -20,6 +20,8 @@ class HomeTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Naviagation Controller Bar Tint
         navigationController?.navigationBar.barTintColor = UIColor.systemTeal
         navigationController?.navigationBar.tintColor = UIColor.white
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
@@ -28,7 +30,18 @@ class HomeTableViewController: UITableViewController {
         // When User trys to reload the screen
         refreshControls.addTarget(self, action: #selector(loadTweets), for: .valueChanged)
         tableView.refreshControl = refreshControls
+        
+        // Table View Cell Size
+        self.tableView.rowHeight = UITableView.automaticDimension
+        self.tableView.estimatedRowHeight = 150
+        
      
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        super.viewDidAppear(animated)
+        self.loadMoreTweets()
     }
     
     // Method to call the tweets API
@@ -108,8 +121,10 @@ class HomeTableViewController: UITableViewController {
         if let imageData = data {
             cell.profilePic.image = UIImage(data: imageData)
         }
-
         
+        cell.setFavorite(_isLiked: tweetsArray[indexPath.row]["favorited"] as! Bool)
+        cell.tweetId = tweetsArray[indexPath.row]["id"] as! Int
+        cell.setRetweet(_isRetweet: tweetsArray[indexPath.row]["retweeted"] as! Bool)
         
         return cell
     }
